@@ -49,15 +49,15 @@ export default function App() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    const key = 1662719;
-    const jsonData = JSON.parse(jsonString);
+    const key = 1662719; //this key is based on scanned barcode
+    const jsonData = JSON.parse(jsonString); //jsonData is based on extracted json files
     
     var food = jsonData["foods"].filter(object => object.fdcId === key);
     
     var cal = Object.values(food[0].foodNutrients).filter(function (object) {
       return object.nutrientName === "Energy";
     });
-    alert(`Bar code with type ${type} and data ${cal[0].value} has been scanned!`);
+    alert(`Bar code with id ${data} and calory ${cal[0].value} has been scanned!`);
 
   };
 
