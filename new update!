@@ -96,6 +96,28 @@ function DetailsScreen({ navigation }) {
     setScanned(true);
     setText(data);
     console.log("Type" + type + '\ndata: ' + data) 
+    var key = data;
+    var FDAUrl = 'https://api.nal.usda.gov/fdc/v1/food/'+key+'?api_key=SWC7bFqByAoJimA93dYdqQpjuHLDDwj5rNRZgc3m';
+    fetch(FDAUrl)
+      .then(res => {return res.json();})
+      //.then(food=>{
+        //alert(`Bar code with id ${data} and calory ${food.fdcId} has been scanned!`);
+        //return food;
+      //})
+      
+      .then(food=>{
+        var cal =food.foodNutrients.filter(function (object) {
+          return object.nutrient.name === "Energy";
+        });
+        return cal;
+      })
+      .then(cal => {
+        alert(`Bar code with id ${data} have been scanned and ${cal[0].amount} KCAL of Energy has been added to your recipies!`);
+        return cal[0].amount;
+      }).then(amount => {
+        setbarcodeData(key);//the barcode id is stored here
+        setFDAData(amount);//the corresponding calory is stored here
+        })
   }
   if (hasPermission === null){
     return (
