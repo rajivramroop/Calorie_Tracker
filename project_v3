@@ -1,0 +1,100 @@
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import React, { useState, useEffect } from 'react';
+
+//const FDAUrl = 'https://api.nal.usda.gov/fdc/v1/foods/list?api_key=SWC7bFqByAoJimA93dYdqQpjuHLDDwj5rNRZgc3m';
+//var api_key="SWC7bFqByAoJimA93dYdqQpjuHLDDwj5rNRZgc3m";
+//var jsonString = '{"totalHits":21874,"currentPage":1,"totalPages":10937,"pageList":[1,2,3,4,5,6,7,8,9,10],"foodSearchCriteria":{"query":"apple","generalSearchInput":"apple","pageNumber":1,"numberOfResultsPerPage":50,"pageSize":2,"requireAllWords":false},"foods":[{"fdcId":1648210,"description":"APPLE","lowercaseDescription":"apple","dataType":"Branded","gtinUpc":"070038322238","publishedDate":"2021-03-19","brandOwner":"Associated Wholesale Grocers, Inc.","brandName":"BEST CHOICE","ingredients":"FILTERED WATER, APPLE JUICE CONCENTRATE, ASCORBIC ACID (VITAMIN C).","marketCountry":"United States","foodCategory":"Fruit & Vegetable Juice, Nectars & Fruit Drinks","allHighlightFields":"<b>Ingredients</b>: FILTERED WATER, <em>APPLE</em> JUICE CONCENTRATE, ASCORBIC ACID (VITAMIN C).","score":904.62524,"foodNutrients":[{"nutrientId":1003,"nutrientName":"Protein","nutrientNumber":"203","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":0.0},{"nutrientId":1004,"nutrientName":"Total lipid (fat)","nutrientNumber":"204","unitName":"G","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":0.0},{"nutrientId":1005,"nutrientName":"Carbohydrate, by difference","nutrientNumber":"205","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":11.7},{"nutrientId":1008,"nutrientName":"Energy","nutrientNumber":"208","unitName":"KCAL","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":46.0},{"nutrientId":2000,"nutrientName":"Sugars, total including NLEA","nutrientNumber":"269","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":11.7},{"nutrientId":1093,"nutrientName":"Sodium, Na","nutrientNumber":"307","unitName":"MG","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":15.0},{"nutrientId":1162,"nutrientName":"Vitamin C, total ascorbic acid","nutrientNumber":"401","unitName":"MG","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":32.5}]},{"fdcId":1662719,"description":"APPLE","lowercaseDescription":"apple","dataType":"Branded","gtinUpc":"887434010245","publishedDate":"2021-03-19","brandOwner":"Oneonta Trading Corporation","brandName":"PINK LADY","ingredients":"","marketCountry":"United States","foodCategory":"Pre-Packaged Fruit & Vegetables","allHighlightFields":"","score":904.62524,"foodNutrients":[{"nutrientId":1003,"nutrientName":"Protein","nutrientNumber":"203","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":0.41},{"nutrientId":1004,"nutrientName":"Total lipid (fat)","nutrientNumber":"204","unitName":"G","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":0.0},{"nutrientId":1005,"nutrientName":"Carbohydrate, by difference","nutrientNumber":"205","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":14.0},{"nutrientId":1008,"nutrientName":"Energy","nutrientNumber":"208","unitName":"KCAL","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":54.0},{"nutrientId":2000,"nutrientName":"Sugars, total including NLEA","nutrientNumber":"269","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":10.3},{"nutrientId":1079,"nutrientName":"Fiber, total dietary","nutrientNumber":"291","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":2.1},{"nutrientId":1087,"nutrientName":"Calcium, Ca","nutrientNumber":"301","unitName":"MG","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":8.0},{"nutrientId":1089,"nutrientName":"Iron, Fe","nutrientNumber":"303","unitName":"MG","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":0.15},{"nutrientId":1092,"nutrientName":"Potassium, K","nutrientNumber":"306","unitName":"MG","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":107},{"nutrientId":1093,"nutrientName":"Sodium, Na","nutrientNumber":"307","unitName":"MG","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":0.0},{"nutrientId":1104,"nutrientName":"Vitamin A, IU","nutrientNumber":"318","unitName":"IU","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":41.0},{"nutrientId":1162,"nutrientName":"Vitamin C, total ascorbic acid","nutrientNumber":"401","unitName":"MG","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":2.0},{"nutrientId":1253,"nutrientName":"Cholesterol","nutrientNumber":"601","unitName":"MG","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":0.0},{"nutrientId":1257,"nutrientName":"Fatty acids, total trans","nutrientNumber":"605","unitName":"G","derivationCode":"LCCS","derivationDescription":"Calculated from value per serving size measure","value":0.0},{"nutrientId":1258,"nutrientName":"Fatty acids, total saturated","nutrientNumber":"606","unitName":"G","derivationCode":"LCCD","derivationDescription":"Calculated from a daily value percentage per serving size measure","value":0.0}]}],"aggregations":{"dataType":{"Branded":21699,"SR Legacy":89,"Survey (FNDDS)":81,"Foundation":5},"nutrients":{}}}';
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+export default function App() {
+  const [FDAData, setFDAData] = useState({});
+  const [barcodeData, setbarcodeData] = useState({});
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned,setScanned] = useState(true);
+
+
+  /*const getFDAWithFetch = async () => {
+     const response = await fetch(FDAUrl);
+     const jsonData = await response.json();
+     jsonData.map((data, key));
+    };
+
+  var getObjectByKey1 = function (array, key) {
+    return array.filter(function (object) {
+      return object.fdcId === key;
+    });
+  };
+
+  var getObjectByKey2 = function (array, key) {
+    return array.filter(function (object) {
+      return object.nutrientName === key;
+    });
+  };*/
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  
+  
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    //var key = 1104067;
+    var key = data;
+    var FDAUrl = 'https://api.nal.usda.gov/fdc/v1/food/'+key+'?api_key=SWC7bFqByAoJimA93dYdqQpjuHLDDwj5rNRZgc3m';
+    fetch(FDAUrl)
+      .then(res => {return res.json();})
+      //.then(food=>{
+        //alert(`Bar code with id ${data} and calory ${food.fdcId} has been scanned!`);
+        //return food;
+      //})
+      
+      .then(food=>{
+        var cal =food.foodNutrients.filter(function (object) {
+          return object.nutrient.name === "Energy";
+        });
+        return cal;
+      })
+      .then(cal => {
+        alert(`Bar code with id ${data} have been scanned and ${cal[0].amount} KCAL of Energy has been added to your recipies!`);
+        return cal[0].amount;
+      }).then(amount => {
+        setbarcodeData(key);//the barcode id is stored here
+        setFDAData(amount);//the corresponding calory is stored here
+      })
+  };
+
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
+  
+  //<Text>To scan the barcode, just press the button below!</Text>
+  return (
+    <View style={styles.container}>
+      {(!scanned) && <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style={StyleSheet.absoluteFillObject}
+      />}
+      {scanned && <Button title={'Tap to Scan'} onPress={() => setScanned(false)} />}
+    </View>
+     
+    
+  );
+}
