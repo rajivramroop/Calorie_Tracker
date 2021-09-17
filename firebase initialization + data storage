@@ -5,6 +5,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 //import { NavigationContainer } from '@react-navigation/native';
 //import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as firebase from 'firebase';
+import { GoogleAuthProvider } from "firebase/auth";
 
 //initializing firebase
 
@@ -16,7 +17,30 @@ const firebaseConfig = {
     storageBucket: "react-firebase-dafe8.appspot.com",
   
   };
+  
   firebase.initializeApp(firebaseConfig);
+const provider = new GoogleAuthProvider();
+import { getAuth, getRedirectResult, GoogleAuthProvider } from "firebase/auth";
+
+const auth = getAuth();
+getRedirectResult(auth)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access Google APIs.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+
+    // The signed-in user info.
+    const user = result.user;
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -177,13 +201,5 @@ function DetailsScreen({ navigation }) {
         setbarcodeData(key);//the barcode id is stored here
         setFDAData(amount);//the corresponding calory is stored here
         })
-        function storeHighScore(userId, score) {
-          firebase
-            .database()
-            .ref('users/' + userId)
-            .set({
-              highscore: score,
-            });
-        }
-
+       
   
