@@ -1,0 +1,202 @@
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as firebase from 'firebase';
+
+//initializng firebase
+
+export default function App() {
+const firebaseConfig = {
+    apiKey: "AIzaSyC5MliANWseH-V4lVnHF_HlcWGonZWfJtM",
+    authDomain: "react-firebase-dafe8.firebaseapp.com",
+    projectId: "react-firebase-dafe8",
+    storageBucket: "react-firebase-dafe8.appspot.com",
+  
+  };
+  function storeUserData(user_name, recipe, name, cal){ 
+    firebase.database().ref('users/'+user_name).once("value", snapshot =>{
+      if(snapshot.exists())
+      {
+        firebase
+        .database()
+        .ref('users/'+user_name+'/' + recipe)
+        .update({
+          [name]: class, 
+
+        });
+      }
+      else 
+      {
+        firebase
+        .database()
+        .ref('users/' + user_name + '/' + recipe )
+        .set({
+          [name]:cal,
+        });
+      }
+    });
+  }
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+  const [text, setText] = useState ('not yet scanned')
+
+  const askForCameraPermission = () => {
+    (async() => {
+      const{status}= await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status == 'granted')
+    }) () 
+  }
+  //Request for Camera Permission
+  useEffect(()=>{
+    askForCameraPermission();
+  }, []
+  );
+
+  
+/*function HomeScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Home Screen</Text>
+      <Button
+        title="Go to Details"
+        onPress={() => navigation.navigate('Details')}
+      />
+    </View>
+  );
+}
+function DetailsScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      <Button
+      title="Go to Details... again"
+       onPress={() => navigation.push('Details')}
+/>
+<Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+      <Button
+        title="Go back to first screen in stack"
+        onPress={() => navigation.popToTop()}
+      />
+    </View>
+  );
+}
+/* 
+
+   
+    /*const getFDAWithFetch = async () => {
+     const response = await fetch(FDAUrl);
+     const jsonData = await response.json();
+     jsonData.map((data, key));
+    };
+
+  var getObjectByKey1 = function (array, key) {
+    return array.filter(function (object) {
+      return object.fdcId === key;
+    });
+  };
+
+  var getObjectByKey2 = function (array, key) {
+    return array.filter(function (object) {
+      return object.nutrientName === key;
+    });
+  };*/
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  
+  
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    setText(data);
+    console.log("Type" + type + '\ndata: ' + data) 
+  }
+  if (hasPermission === null){
+    return (
+      <View style= {styles.container}>
+        <Text> Requesting for camera permission</Text>
+      </View>
+    )
+  }
+  if (hasPermission === false){
+    return (
+      <View style={styles.container}>
+        <Text style = {{margin:10}}> No access to camera </Text>
+        <Button title = {'Allow Camera'}onPress = {() =>askForCameraPermission}/>
+      </View>
+    )
+  }
+  //Return the View 
+  return (
+      <View style= {styles.container}>
+        <View style = {styles.barcodebox}>
+        <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style= {{ height:400, width: 400}} />
+        </View>
+        <Text style ={styles.maintext}>{text}</Text>
+
+        {scanned && <Button title= {'Scan Again?'} onPress = {() => setScanned(false)} color='tomato'/>}
+        </View>
+      
+    );
+  }
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent:'center',
+    },
+    barcodebox: {
+      alignItems: 'center',
+      justifyContent:'center',
+      height: 300,
+      width: 300,
+      overflow: 'hidden',
+      borderRadius:30,
+      backgroundColor: 'tomato',
+
+    },
+    maintext: {
+      fontSize:16,
+      margin: 20,
+
+    }
+  });
+
+    //var key = 1104067;
+   /* var key = data;
+    var FDAUrl = 'https://api.nal.usda.gov/fdc/v1/food/'+key+'?api_key=SWC7bFqByAoJimA93dYdqQpjuHLDDwj5rNRZgc3m';
+    fetch(FDAUrl)
+      .then(res => {return res.json();})
+      //.then(food=>{
+        //alert(`Bar code with id ${data} and calory ${food.fdcId} has been scanned!`);
+        //return food;
+      //})
+      
+      .then(food=>{
+        var cal =food.foodNutrients.filter(function (object) {
+          return object.nutrient.name === "Energy";
+        });
+        return cal;
+      })
+      .then(cal => {
+        alert(`Bar code with id ${data} have been scanned and ${cal[0].amount} KCAL of Energy has been added to your recipies!`);
+        return cal[0].amount;
+      }).then(amount => {
+        setbarcodeData(key);//the barcode id is stored here
+        setFDAData(amount);//the corresponding calory is stored here
+        })
+  
+
+  */
