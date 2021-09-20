@@ -7,4 +7,4 @@ Added navigation to the project to allow for multiple screens, but decided to pu
 
 Decided to instead use anonymous authentication instead of google authentication, but we are still having trouble connecting to database. ( 09/17/21)
 
-Database problem resolved, issues with expo install firebase. Managed to upload and download datas from firebase firestore. App.js is our final result. Sadly since we are using alert, recording seems to neglect our recipes showing with alert. Instead we uploaded images on running application(09/19/21)
+Database problem resolved, issues with expo install firebase. Managed to upload and download datas from firebase firestore. App.js is our final result. We uploaded images on running application(09/19/21)
