@@ -262,7 +262,7 @@ export default function App() {
 
   const handledownload = () => {
     var db = firebase.firestore();
-    db.collection("users").get().then((querySnapshot) => {
+    db.collection("foods").get().then((querySnapshot) => {
       var strings = "";
       querySnapshot.forEach((doc) => {
           //alert(`${doc.data().name}, ${doc.data().calories}`);
@@ -270,17 +270,7 @@ export default function App() {
       });
       alert(`${strings}`);
   });
-    /*
-    db.collection("foods").get().then((querySnapshot) => {
-      alert(`downloading ${querySnapshot}`);
-      //var strings = "";
-      querySnapshot.foreach((doc) => {
-        alert('working');
-        //alert(`${doc.data().name},${doc.data().calories}\n`);
-        //strings+= 'recipe: '+doc.data().name+' calories: '+doc.data().calories+'\n';
-      });
-      //alert(`${strings}`);
-  });*/
+    
     
   };
 
