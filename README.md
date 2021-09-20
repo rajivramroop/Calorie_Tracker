@@ -6,3 +6,5 @@ there are several versions to this application. Thus far, we can scan a barcode 
 Added navigation to the project to allow for multiple screens, but decided to pull out and focus more on getting the barcode scanner to improve. Added circular design to barcode so that there is a more focused scan ( 09/15/21). 
 
 Decided to instead use anonymous authentication instead of google authentication, but we are still having trouble connecting to database. ( 09/17/21)
+
+Database problem resolved, issues with expo install firebase, uploaded images on running application(09/19/21)
